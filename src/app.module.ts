@@ -5,12 +5,14 @@ import { AssignmentModule } from './assignment/assignment.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { multerConfig } from '../src/assignment/config/multer.config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AdminModule } from './auth/admin/admin.module';
 
 @Module({
   imports: [
     AuthModule,
     PrismaModule,
     AssignmentModule,
+    AdminModule,
     MulterModule.register(multerConfig),
     MailerModule.forRoot({
       transport: {

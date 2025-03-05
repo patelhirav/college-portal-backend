@@ -1,18 +1,6 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Req,
-  Get,
-  Param,
-  Patch,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
@@ -27,51 +15,6 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() signupDto: SignupDto) {
     return this.authService.signup(signupDto);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Post('admin')
-  async addAdmin(@Body() adminDto: SignupDto, @Req() req) {
-    return this.authService.addAdmin(adminDto, req.user.id);
-  }
-
-  /**
-   * Get all Admins (Only Super Admin)
-   */
-  @UseGuards(AuthGuard('jwt'))
-  @Get('admins')
-  async getAllAdmins(@Req() req) {
-    return this.authService.getAllAdmins();
-  }
-
-  /**
-   * Get a single Admin by ID
-   */
-  @UseGuards(AuthGuard('jwt'))
-  @Get('admin/:id')
-  async getAdminById(@Param('id') adminId: string) {
-    return this.authService.getAdminById(adminId);
-  }
-
-  /**
-   * Update an Admin (Only Super Admin)
-   */
-  @UseGuards(AuthGuard('jwt'))
-  @Patch('admin/:id')
-  async updateAdmin(
-    @Param('id') adminId: string,
-    @Body() updateAdminDto: UpdateAdminDto,
-  ) {
-    return this.authService.updateAdmin(adminId, updateAdminDto);
-  }
-
-  /**
-   * Delete an Admin (Only Super Admin)
-   */
-  @UseGuards(AuthGuard('jwt'))
-  @Delete('admin/:id')
-  async deleteAdmin(@Param('id') adminId: string) {
-    return this.authService.deleteAdmin(adminId);
   }
 
   @Post('forgot-password')
