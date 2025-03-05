@@ -6,21 +6,24 @@ const prisma = new PrismaClient();
 async function main() {
   const hashedPassword = await bcrypt.hash('1234', 10);
 
-  await prisma.superAdmin.upsert({
+  const superAdmin = await prisma.superAdmin.upsert({
     where: { email: 'hirav.patel@wappzo.com' },
     update: {},
     create: {
       name: 'Super Admin',
       email: 'hirav.patel@wappzo.com',
-      password: hashedPassword,
+      password: hashedPassword, 
     },
   });
 
-  console.log('Super Admin created');
+  console.log('✅ Super Admin Seeded:', superAdmin);
 }
 
 main()
-  .catch((e) => console.error(e))
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
   .finally(async () => {
     await prisma.$disconnect();
   });

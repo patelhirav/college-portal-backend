@@ -1,19 +1,29 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
-import { PrismaService } from './prisma/prisma.service';
-import { AssignmentsModule } from './assignments/assignments.module';
-import { AdminModule } from './admin/admin.module';
-import { UploadsModule } from './uploads/uploads.module';
-import { UsersModule } from './users/users.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { AssignmentModule } from './assignment/assignment.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { multerConfig } from '../src/assignment/config/multer.config';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
     AuthModule,
-    AssignmentsModule,
-    AdminModule,
-    UploadsModule,
-    UsersModule,
+    PrismaModule,
+    AssignmentModule,
+    MulterModule.register(multerConfig),
+    MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      },
+      defaults: {
+        from: '"No Reply" <patelhirav2212@gmail.com>',
+      },
+    }),
   ],
-  providers: [PrismaService],
 })
 export class AppModule {}
