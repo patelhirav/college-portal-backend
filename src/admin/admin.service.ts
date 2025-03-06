@@ -5,8 +5,8 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SignupDto } from '../dto/signup.dto';
-import { UpdateAdminDto } from '../dto/update-admin.dto';
+import { SignupDto } from '../auth/dto/signup.dto';
+import { UpdateAdminDto } from '../auth/dto/update-admin.dto';
 import * as bcrypt from 'bcrypt';
 import { $Enums } from '@prisma/client';
 

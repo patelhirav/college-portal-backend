@@ -10,13 +10,14 @@ async function main() {
     where: { email: 'hirav.patel@wappzo.com' },
     update: {},
     create: {
+      // id: "1",
       name: 'Super Admin',
       email: 'hirav.patel@wappzo.com',
-      password: hashedPassword, 
+      password: hashedPassword,
     },
   });
 
-  console.log('✅ Super Admin Seeded:', superAdmin);
+  console.log('Super Admin Seeded:', superAdmin);
 }
 
 main()

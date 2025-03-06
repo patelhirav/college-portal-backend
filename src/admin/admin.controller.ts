@@ -10,8 +10,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { SignupDto } from '../dto/signup.dto';
-import { UpdateAdminDto } from '../dto/update-admin.dto';
+import { SignupDto } from '../auth/dto/signup.dto';
+import { UpdateAdminDto } from '../auth/dto/update-admin.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
