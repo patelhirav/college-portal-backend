@@ -10,7 +10,9 @@ import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/college-portal'),
+    MongooseModule.forRoot(
+      'mongodb+srv://jitenpatel:jiten123@cluster0.pkuewvp.mongodb.net/college-portal',
+    ),
     AuthModule,
     PrismaModule,
     AssignmentModule,
