@@ -14,8 +14,4 @@ export class PrismaService
   async onModuleDestroy() {
     await this.$disconnect();
   }
-
-  async deleteOTP(userId: string) {
-    await this.oTP.delete({ where: { userId } });
-  }
 }

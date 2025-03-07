@@ -48,7 +48,6 @@ model SuperAdmin {
   email    String  @unique
   password String
   admins   Admin[]
-  OTP      OTP?
 }
 
 model Admin {
@@ -61,7 +60,6 @@ model Admin {
   assignments       Assignment[]
   SuperAdmin        SuperAdmin?  @relation(fields: [superAdminId], references: [id])
   superAdminId      String?
-  OTP               OTP?
 }
 
 model User {
@@ -78,23 +76,8 @@ model User {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime?    @updatedAt()
   Assignment Assignment[]
-  OTP        OTP?
 }
 
-model OTP {
-  id           String  @id @default(uuid()) @map("_id")
-  userId       String? @unique
-  adminId      String? @unique
-  superAdminId String? @unique
-
-  user       User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  admin      Admin?      @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  superAdmin SuperAdmin? @relation(fields: [superAdminId], references: [id], onDelete: Cascade)
-
-  otp       String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-}
 
 model Leave {
   id            String      @id @default(uuid()) @map("_id")
