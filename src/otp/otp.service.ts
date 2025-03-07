@@ -30,7 +30,7 @@ export class OtpService {
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = moment().add(5, 'minutes').toDate();
 
-    await this.prisma.otp.upsert({
+    await this.prisma.oTP.upsert({
       where: { userId: user.id },
       update: { otp, expiresAt },
       create: { userId: user.id, otp, expiresAt },
@@ -54,7 +54,7 @@ export class OtpService {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new NotFoundException('User not found');
 
-    const otpRecord = await this.prisma.otp.findUnique({
+    const otpRecord = await this.prisma.oTP.findUnique({
       where: { userId: user.id },
     });
     if (!otpRecord || otpRecord.otp !== otp) {
@@ -77,7 +77,7 @@ export class OtpService {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new NotFoundException('User not found');
 
-    const otpRecord = await this.prisma.otp.findUnique({
+    const otpRecord = await this.prisma.oTP.findUnique({
       where: { userId: user.id },
     });
     if (!otpRecord || otpRecord.otp !== otp) {
@@ -95,7 +95,7 @@ export class OtpService {
       data: { password: hashedPassword },
     });
 
-    await this.prisma.otp.delete({ where: { userId: user.id } });
+    await this.prisma.oTP.delete({ where: { userId: user.id } });
 
     return { message: 'Password reset successfully' };
   }

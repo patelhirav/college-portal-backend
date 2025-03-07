@@ -76,7 +76,8 @@ model User {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime?    @updatedAt()
   Assignment Assignment[]
-  OTP        OTP?
+
+  otp OTP?
 }
 
 model OTP {
