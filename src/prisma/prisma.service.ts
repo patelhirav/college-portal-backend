@@ -16,6 +16,6 @@ export class PrismaService
   }
 
   async deleteOTP(userId: string) {
-    await this.OTP.delete({ where: { userId } });
+    await this.oTP.delete({ where: { userId } });
   }
 }
