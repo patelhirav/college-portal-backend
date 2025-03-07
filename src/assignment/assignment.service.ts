@@ -44,7 +44,7 @@ export class AssignmentService {
       where: { id },
       data: {
         ...dto,
-        branch: dto.branch ? (dto.branch as Branch) : undefined, // ✅ Convert string to Prisma enum
+        branch: dto.branch ? (dto.branch as Branch) : undefined,
         fileUrl: file ? `/uploads/${file.filename}` : undefined,
       },
     });

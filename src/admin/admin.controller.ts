@@ -13,6 +13,7 @@ import { AdminService } from './admin.service';
 import { SignupDto } from '../auth/dto/signup.dto';
 import { UpdateAdminDto } from '../auth/dto/update-admin.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AdminController {
@@ -20,6 +21,20 @@ export class AdminController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('add-admin')
+  @ApiBody({
+    type: SignupDto,
+    examples: {
+      example1: {
+        summary: 'Default Add Admin Example',
+        value: {
+          name: '',
+          email: '',
+          password: '',
+          branch: '',
+        },
+      },
+    },
+  })
   async addAdmin(@Body() adminDto: SignupDto, @Req() req) {
     return this.adminService.addAdmin(adminDto, req.user.id);
   }
@@ -38,6 +53,22 @@ export class AdminController {
 
   @UseGuards(AuthGuard('jwt'))
   @Patch('admin/:id')
+  @ApiBody({
+    type: UpdateAdminDto,
+    examples: {
+      example1: {
+        summary: 'Default Update Admin Example',
+        value: {
+          name: '',
+          email: '',
+          branch: '',
+          year: '',
+          semester: '',
+          enr_no: '',
+        },
+      },
+    },
+  })
   async updateAdmin(
     @Param('id') adminId: string,
     @Body() updateAdminDto: UpdateAdminDto,

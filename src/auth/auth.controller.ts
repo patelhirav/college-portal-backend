@@ -1,43 +1,53 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @ApiBody({
+    type: LoginDto,
+    examples: {
+      example1: {
+        summary: 'Default Login Example',
+        value: {
+          email: '',
+          password: '',
+        },
+      },
+    },
+  })
+  @UseInterceptors(AnyFilesInterceptor())
   async login(@Body() loginDto: LoginDto) {
+    console.log('Received Data:', loginDto);
     return this.authService.login(loginDto);
   }
 
   @Post('signup')
+  @ApiBody({
+    type: SignupDto,
+    examples: {
+      example1: {
+        summary: 'Default Signup Example',
+        value: {
+          name: '',
+          email: '',
+          password: '',
+          branch: '',
+          year: '',
+          semester: '',
+          enr_no: '',
+        },
+      },
+    },
+  })
+  @UseInterceptors(AnyFilesInterceptor())
   async signup(@Body() signupDto: SignupDto) {
     return this.authService.signup(signupDto);
-  }
-
-  @Post('forgot-password')
-  async forgotPassword(@Body('email') email: string) {
-    return this.authService.sendOtp(email);
-  }
-
-  @Post('verify-otp')
-  async verifyOtp(@Body('email') email: string, @Body('otp') otp: string) {
-    return this.authService.verifyOtp(email, otp);
-  }
-
-  @Post('resend-otp')
-  async resendOtp(@Body('email') email: string) {
-    return this.authService.resendOtp(email);
-  }
-
-  @Post('reset-password')
-  async resetPassword(
-    @Body('email') email: string,
-    @Body('otp') otp: string,
-    @Body('newPassword') newPassword: string,
-  ) {
-    return this.authService.resetPassword(email, otp, newPassword);
   }
 }

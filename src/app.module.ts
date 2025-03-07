@@ -7,12 +7,14 @@ import { multerConfig } from '../src/assignment/config/multer.config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AdminModule } from './admin/admin.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://jitenpatel:jiten123@cluster0.pkuewvp.mongodb.net/college-portal',
+      'mongodb+srv://Hirav:Hirav123@cluster0.gcih2.mongodb.net/college-portal',
     ),
+    OtpModule,
     AuthModule,
     PrismaModule,
     AssignmentModule,

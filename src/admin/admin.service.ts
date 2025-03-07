@@ -20,7 +20,6 @@ export class AdminService {
   async addAdmin(adminDto: SignupDto, superAdminId: string) {
     const { name, email, password, branch } = adminDto;
 
-    // Check if the requester is a Super Admin
     const superAdmin = await this.prisma.superAdmin.findUnique({
       where: { id: superAdminId },
     });
@@ -29,17 +28,14 @@ export class AdminService {
       throw new UnauthorizedException('Only Super Admins can add Admins');
     }
 
-    // Check if admin with this email already exists
     const existingAdmin = await this.prisma.admin.findUnique({
       where: { email },
     });
     if (existingAdmin)
       throw new BadRequestException('Admin with this email already exists');
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the Admin
     const admin = await this.prisma.admin.create({
       data: {
         name,
