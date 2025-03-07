@@ -87,6 +87,8 @@ model OTP {
   otp       String
   expiresAt DateTime
   createdAt DateTime @default(now())
+
+  @@map("otp")
 }
 
 model Leave {
