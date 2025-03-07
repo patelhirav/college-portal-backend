@@ -6,6 +6,7 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  otp: any;
   async onModuleInit() {
     await this.$connect();
   }
@@ -15,6 +16,6 @@ export class PrismaService
   }
 
   async deleteOTP(userId: string) {
-    await this.oTP.delete({ where: { userId } });
+    await this.OTP.delete({ where: { userId } });
   }
 }

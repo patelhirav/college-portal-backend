@@ -37,9 +37,9 @@ export class OtpService {
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = moment().add(5, 'minutes').toDate();
 
-    await this.prisma.oTP.upsert({
+    await this.prisma.OTP.upsert({
       where: {
-        userId: user?.id || admin?.id || superAdmin?.id, 
+        userId: user?.id || admin?.id || superAdmin?.id,
       },
       update: { otp, expiresAt },
       create: {
@@ -79,7 +79,7 @@ export class OtpService {
 
     const userId = user?.id || admin?.id || superAdmin?.id;
 
-    const otpRecord = await this.prisma.oTP.findFirst({
+    const otpRecord = await this.prisma.OTP.findFirst({
       where: {
         OR: [{ userId }, { adminId: userId }, { superAdminId: userId }],
       },
@@ -113,7 +113,7 @@ export class OtpService {
 
     const userId = user?.id || admin?.id || superAdmin?.id;
 
-    const otpRecord = await this.prisma.oTP.findFirst({
+    const otpRecord = await this.prisma.OTP.findFirst({
       where: {
         OR: [{ userId }, { adminId: userId }, { superAdminId: userId }],
       },
@@ -146,7 +146,7 @@ export class OtpService {
       });
     }
 
-    await this.prisma.oTP.delete({
+    await this.prisma.OTP.delete({
       where: { id: otpRecord.id },
     });
 
