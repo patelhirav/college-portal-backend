@@ -5,35 +5,37 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-
-interface JwtPayload {
-  id: string;
-  email: string;
-  role: string;
-}
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(
-    private jwtService: JwtService,
-    private reflector: Reflector,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request>();
-    const token = request.headers.authorization?.split(' ')[1];
+    const request: Request = context.switchToHttp().getRequest();
+    const authHeader = request.headers.authorization;
 
-    if (!token) {
+    if (!authHeader) {
+      console.log('❌ No authorization header found');
       throw new UnauthorizedException('No token provided');
     }
 
+    const token = authHeader.split(' ')[1]; // Extract token from "Bearer <token>"
+
+    if (!token) {
+      console.log('❌ No token found after "Bearer"');
+      throw new UnauthorizedException('Invalid token format');
+    }
+
     try {
-      const payload = this.jwtService.verify<JwtPayload>(token);
-      request.user = payload; 
+      const decoded = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      console.log('✅ Decoded Token:', decoded);
+      request.user = decoded; // Attach user details to request
       return true;
     } catch (error) {
+      console.log('❌ JWT Verification Error:', error.message);
       throw new UnauthorizedException('Invalid token');
     }
   }

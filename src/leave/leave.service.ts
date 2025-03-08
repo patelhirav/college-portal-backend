@@ -1,50 +1,42 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ApplyLeaveDto } from './dto/apply-leave.dto';
-import { UpdateLeaveStatusDto } from './dto/update-leave-status.dto';
+import { ApplyLeaveDto } from './dto/leave.dto';
 
 @Injectable()
 export class LeaveService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
-  async applyForLeave(userId: string, dto: ApplyLeaveDto) {
-    return await this.prisma.leave.create({
+  async applyLeave(userId: string, dto: ApplyLeaveDto) {
+    return this.prisma.leave.create({
       data: {
-        userId,
-        reason: dto.reason,
-        startDate: new Date(dto.startDate),
-        endDate: new Date(dto.endDate),
+        userId: userId, // Use the logged-in user ID
+        applicantName: 'test',
+        leaveDate: new Date(dto.leaveDate), // Convert to Date object
+        noOfDays: dto.noOfDays,
+        leaveReason: dto.leaveReason,
+        status: 'PENDING',
       },
     });
   }
 
   async getUserLeaves(userId: string) {
-    return await this.prisma.leave.findMany({
+    return this.prisma.leave.findMany({
       where: { userId },
+      include: { user: true }, // Ensure lowercase 'user'
     });
   }
 
-  async getAllPendingLeaves() {
-    return await this.prisma.leave.findMany({
-      where: { status: 'pending' },
+  async getPendingLeaves() {
+    return this.prisma.leave.findMany({
+      where: { status: 'PENDING' },
       include: { user: true },
     });
   }
 
-  async updateLeaveStatus(leaveId: string, dto: UpdateLeaveStatusDto) {
-    const leave = await this.prisma.leave.findUnique({
+  async updateLeaveStatus(leaveId: string, status: string) {
+    return this.prisma.leave.update({
       where: { id: leaveId },
-    });
-
-    if (!leave) throw new NotFoundException('Leave request not found');
-
-    return await this.prisma.leave.update({
-      where: { id: leaveId },
-      data: { status: dto.status },
+      data: { status },
     });
   }
 }

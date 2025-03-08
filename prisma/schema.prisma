@@ -80,7 +80,7 @@ model User {
 }
 
 model StudyMaterial {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid()) @map("_id")
   subject   String
   chapter   String
   year      Int
@@ -88,19 +88,18 @@ model StudyMaterial {
   semester  Int
   fileUrl   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Leave {
-  id        String   @id @default(uuid()) @map("_id")
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reason    String
-  startDate DateTime
-  endDate   DateTime
-  status    String   @default("pending")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid()) @map("_id")
+  userId        String
+  applicantName String
+  leaveDate     DateTime
+  noOfDays      Int
+  leaveReason   String
+  status        String   @default("PENDING")
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model OTP {

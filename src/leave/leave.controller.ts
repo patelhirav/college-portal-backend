@@ -1,64 +1,50 @@
 import {
   Controller,
   Post,
+  Body,
   Get,
   Patch,
-  Body,
-  UseGuards,
   Param,
-  Request,
-  ForbiddenException,
+  Req,
+  UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LeaveService } from './leave.service';
-import { ApplyLeaveDto } from './dto/apply-leave.dto';
-import { UpdateLeaveStatusDto } from './dto/update-leave-status.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { ApplyLeaveDto } from './dto/leave.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@ApiTags('Leave')
-@ApiBearerAuth()
 @Controller('leave')
 export class LeaveController {
   constructor(private readonly leaveService: LeaveService) {}
 
-  // Apply for Leave (Only Students)
+  @UseGuards(JwtAuthGuard)
   @Post('apply')
-  @UseGuards(AuthGuard('jwt'))
-  async applyForLeave(@Request() req, @Body() dto: ApplyLeaveDto) {
-    if (req.user.role !== 'USER') {
-      throw new ForbiddenException('Only students can apply for leave');
+  applyLeave(@Req() req, @Body() applyLeaveDto: ApplyLeaveDto) {
+    const user = req.user; // Extract user from JWT token
+    if (user.role !== 'USER') {
+      throw new UnauthorizedException('Only students can apply for leave');
     }
-    return this.leaveService.applyForLeave(req.user.id, dto);
+    return this.leaveService.applyLeave(user.id, applyLeaveDto);
   }
 
-  // Get All Leaves for the Logged-in User
-  @Get('my-leaves')
-  @UseGuards(AuthGuard('jwt'))
-  async getUserLeaves(@Request() req) {
+  @UseGuards(JwtAuthGuard)
+  @Get('user-leaves')
+  getUserLeaves(@Req() req) {
     return this.leaveService.getUserLeaves(req.user.id);
   }
 
-  // Admin: Get Pending Leaves
-  @Get('pending')
-  @UseGuards(AuthGuard('jwt'))
-  async getAllPendingLeaves(@Request() req) {
-    if (req.user.role !== 'ADMIN') {
-      throw new ForbiddenException('Only admins can view pending leaves');
-    }
-    return this.leaveService.getAllPendingLeaves();
+  @UseGuards(JwtAuthGuard)
+  @Get('pending-leaves')
+  getPendingLeaves() {
+    return this.leaveService.getPendingLeaves();
   }
 
-  // Admin: Approve/Reject Leave Request
-  @Patch(':id/status')
-  @UseGuards(AuthGuard('jwt'))
-  async updateLeaveStatus(
-    @Request() req,
+  @UseGuards(JwtAuthGuard)
+  @Patch('update-status/:id')
+  updateLeaveStatus(
     @Param('id') leaveId: string,
-    @Body() dto: UpdateLeaveStatusDto,
+    @Body('status') status: string,
   ) {
-    if (req.user.role !== 'ADMIN') {
-      throw new ForbiddenException('Only admins can approve/reject leaves');
-    }
-    return this.leaveService.updateLeaveStatus(leaveId, dto);
+    return this.leaveService.updateLeaveStatus(leaveId, status);
   }
 }
