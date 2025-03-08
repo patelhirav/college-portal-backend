@@ -7,6 +7,8 @@ import { multerConfig } from '../src/assignment/config/multer.config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AdminModule } from './admin/admin.module';
+import { StudyMaterialModule } from './StudyMaterial/study-material.module';
+import { LeaveModule } from './leave/leave.module';
 
 @Module({
   imports: [
@@ -14,9 +16,11 @@ import { AdminModule } from './admin/admin.module';
       'mongodb+srv://Hirav:Hirav123@cluster0.gcih2.mongodb.net/college-portal',
     ),
     AuthModule,
+    LeaveModule,
     PrismaModule,
     AssignmentModule,
     AdminModule,
+    StudyMaterialModule,
     MulterModule.register(multerConfig),
     MailerModule.forRoot({
       transport: {
